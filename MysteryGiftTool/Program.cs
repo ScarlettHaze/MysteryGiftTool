@@ -19,12 +19,14 @@ namespace MysteryGiftTool
         private static DateTime now = DateTime.Now;
         private static bool keep_log;
         private static StreamWriter log;
-        private const string filelist_server = "https://npfl.c.app.nintendowifi.net/p01/filelist/{0}/FGONLYT?ap=11012900000";
-        private const string file_server = "https://npdl.cdn.nintendowifi.net/p01/nsa/{0}/FGONLYT/{1}?ap=11012900000&tm=2";
+        private const string filelist_server = "https://npfl.c.app.nintendowifi.net/p01/filelist/{0}/FGONLYT";
+        private const string file_server = "https://npdl.cdn.nintendowifi.net/p01/nsa/{0}/FGONLYT/{1}?tm=2";
         private static readonly CTR.AesEngine engine = new CTR.AesEngine();
 
         private static readonly Game[] games =
         {
+            new Game {Name = "Gen6Local", ID = "kIk3rjwlpys7cBgb", Generation=6 },
+            new Game {Name = "Gen7Local", ID = "Yhg9sWpNbOT95HTu", Generation=7 },
             new Game {Name = "Bank", ID = "vgBivYesOH9RS5I8", Generation=7 },
             new Game {Name = "UltraMoon",ID= "b3Gq6LF6EqE1bvKy", Generation=7},
             new Game {Name = "UltraSun", ID= "fnCAH3KrGIl9dgSd", Generation=7 },
