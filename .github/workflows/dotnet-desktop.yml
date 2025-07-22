@@ -1,0 +1,35 @@
+name: Build MysteryGiftTool (.NET Framework)
+
+on:
+  workflow_dispatch:        # Allow manual trigger
+  push:
+    branches: [ main ]      # Trigger on push to main
+  pull_request:
+    branches: [ main ]      # Trigger on PR to main
+
+jobs:
+  build:
+    name: Build on Windows
+    runs-on: windows-latest
+
+    steps:
+    - name: 📥 Checkout repository
+      uses: actions/checkout@v4
+
+    - name: 🧰 Set up NuGet
+      uses: NuGet/setup-nuget@v2
+
+    - name: 🔁 Restore NuGet packages
+      run: nuget restore MysteryGiftTool.sln
+
+    - name: 🏗️ Set up MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: 🛠️ Build solution
+      run: msbuild MysteryGiftTool.sln /p:Configuration=Release
+
+    - name: 📦 Upload Build Artifacts (.exe)
+      uses: actions/upload-artifact@v4
+      with:
+        name: MysteryGiftTool-Exe
+        path: '**/bin/Release/*.exe'

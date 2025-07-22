@@ -1,0 +1,50 @@
+name: .NET Framework Desktop Build and Test
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+
+    env:
+      Solution_Name: MysteryGiftTool.sln  # Your solution file name here
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Setup NuGet CLI
+      uses: NuGet/setup-nuget@v1
+
+    - name: Restore NuGet packages
+      run: nuget restore ${{ env.Solution_Name }}
+
+    - name: Build solution
+      run: msbuild MysteryGiftTool.sln /p:Configuration=Release /p:Platform="Any CPU" /m
+
+    # Optional: If you have tests in .NET Framework, run them with vstest.console.exe or your test runner
+    # - name: Run tests
+    #   run: |
+    #     vstest.console.exe Path\To\TestProject\bin\${{ matrix.configuration }}\TestProject.dll
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: Build-${{ matrix.configuration }}
+        path: |
+          **\bin\${{ matrix.configuration }}\
+          !**\obj\**
