@@ -34,7 +34,7 @@ jobs:
       run: nuget restore ${{ env.Solution_Name }}
 
     - name: Build solution
-      run: msbuild ${{ env.Solution_Name }} /p:Configuration=${{ matrix.configuration }} /p:Platform="Any CPU" /m
+      run: msbuild MysteryGiftTool.sln /p:Configuration=Release /p:Platform="Any CPU" /m
 
     # Optional: If you have tests in .NET Framework, run them with vstest.console.exe or your test runner
     # - name: Run tests
