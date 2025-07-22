@@ -25,8 +25,11 @@ jobs:
     - name: 🏗️ Set up MSBuild
       uses: microsoft/setup-msbuild@v2
 
+    - name: 🧹 Clean solution (optional)
+      run: msbuild MysteryGiftTool.sln /t:Clean /p:Configuration=Release /p:Platform="Any CPU"
+
     - name: 🛠️ Build solution
-      run: msbuild MysteryGiftTool.sln /p:Configuration=Release
+      run: msbuild MysteryGiftTool.sln /p:Configuration=Release /p:Platform="Any CPU" /m /v:minimal
 
     - name: 📦 Upload Build Artifacts (.exe)
       uses: actions/upload-artifact@v4
