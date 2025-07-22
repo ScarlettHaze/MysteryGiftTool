@@ -1,4 +1,4 @@
-name: DSPRE Canary Build
+name: PKMN
 
 on:
   push:
@@ -9,12 +9,12 @@ permissions:
   contents: write
 
 env:
-  SOLUTION_FILE_PATH: DS_Map.sln
+  SOLUTION_FILE_PATH: MysteryGiftTool.sln
   BUILD_CONFIGURATION: Release
 
 jobs:
   build:
-    if: github.repository == 'ScarlettHaze/DS-Pokemon-Rom-Editor'
+    if: github.repository == 'ScarlettHaze/MysteryGiftTool'
     runs-on: windows-latest
 
     steps:
@@ -51,8 +51,8 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         tag_name: canary
-        name: DSPRE Canary Build ${{ steps.date.outputs.date }}
-        files: DSPRE-canary.zip
+        name: MYS Tool ${{ steps.date.outputs.date }}
+        files: MysteryGiftTool.zip
         token: ${{ secrets.GITHUB_TOKEN }}
         prerelease: true
         generate_release_notes: true
