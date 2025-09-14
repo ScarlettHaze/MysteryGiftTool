@@ -26,19 +26,21 @@ jobs:
       - name: Restore NuGet packages
         run: nuget restore MysteryGiftTool.sln
 
-      # Step 4: Build Debug
-      - name: Build Debug
-        run: msbuild MysteryGiftTool.sln /p:Configuration=Debug /p:Platform="Any CPU"
-        working-directory: MysteryGiftTool
+      # Step 4: Build PKHeX.Core first
+      - name: Build PKHeX.Core
+        run: msbuild PKHeX/PKHeX.Core.csproj /p:Configuration=Release /p:Platform="Any CPU"
 
-      # Step 5: Build Release
-      - name: Build Release
-        run: msbuild MysteryGiftTool.sln /p:Configuration=Release /p:Platform="Any CPU"
-        working-directory: MysteryGiftTool
+      # Step 5: Build MysteryGiftTool Debug
+      - name: Build MysteryGiftTool Debug
+        run: msbuild MysteryGiftTool/MysteryGiftTool.csproj /p:Configuration=Debug /p:Platform="Any CPU"
 
-      # Step 6: Upload Release build artifact
+      # Step 6: Build MysteryGiftTool Release
+      - name: Build MysteryGiftTool Release
+        run: msbuild MysteryGiftTool/MysteryGiftTool.csproj /p:Configuration=Release /p:Platform="Any CPU"
+
+      # Step 7: Upload Release build artifact
       - name: Upload Release Build
         uses: actions/upload-artifact@v3
         with:
           name: MysteryGiftTool-Release
-          path: MysteryGiftTool/bin/Release/
+          path: MysteryGiftTool/MysteryGiftTool/bin/Release/
