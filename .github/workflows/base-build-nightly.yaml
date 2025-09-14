@@ -1,58 +1,42 @@
-name: PKMN
+name: Build MysteryGiftTool
 
 on:
   push:
     branches:
-      - main  # Trigger only on pushes to the main branch
-
-permissions:
-  contents: write
-
-env:
-  SOLUTION_FILE_PATH: MysteryGiftTool.sln
-  BUILD_CONFIGURATION: Release
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
-    if: github.repository == 'ScarlettHaze/MysteryGiftTool'
+    name: Build on Windows
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
+      # Step 1: Checkout the repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      # Step 2: Setup NuGet
+      - name: Setup NuGet
+        uses: nuget/setup-nuget@v1
 
-    - name: Restore NuGet packages
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+      # Step 3: Restore NuGet packages
+      - name: Restore NuGet packages
+        run: nuget restore MysteryGiftTool.sln
 
-    - name: Build DSPRE
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
-    
-    - name: Zip Release Files
-      run: Compress-Archive -Path ${{env.GITHUB_WORKSPACE}}DS_Map\bin\Release -DestinationPath DSPRE-canary.zip
+      # Step 4: Build Debug
+      - name: Build Debug
+        run: msbuild MysteryGiftTool.sln /p:Configuration=Debug
 
-    - name: Fetch tags
-      run: git fetch --prune --unshallow --tags
+      # Step 5: Build Release
+      - name: Build Release
+        run: msbuild MysteryGiftTool.sln /p:Configuration=Release
 
-    - name: Delete previous release
-      run: |
-        gh release delete --yes canary
-
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Get current date
-      id: date
-      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-        
-    - name: Create new release
-      uses: softprops/action-gh-release@v2
-      with:
-        tag_name: canary
-        name: MYS Tool ${{ steps.date.outputs.date }}
-        files: MysteryGiftTool.zip
-        token: ${{ secrets.GITHUB_TOKEN }}
-        prerelease: true
-        generate_release_notes: true
+      # Step 6: Upload Release artifact
+      - name: Upload Release Build
+        uses: actions/upload-artifact@v3
+        with:
+          name: MysteryGiftTool-Release
+          path: bin\Release\
